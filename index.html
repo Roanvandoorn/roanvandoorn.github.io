@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ice Water Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Raleway', sans-serif;
+  background: #020d18;
+}
+
+video.background {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  filter: brightness(0.55) saturate(1.4);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(0,150,255,0.12), transparent 50%),
+    radial-gradient(ellipse at 85% 80%, rgba(0,80,180,0.10), transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(180, 230, 255, 0.7);
+  animation: floatUp linear infinite;
+}
+.particle:nth-child(1) { left:10%; width:3px; height:3px; animation-duration:8s; animation-delay:0s; }
+.particle:nth-child(2) { left:20%; width:5px; height:5px; animation-duration:10s; animation-delay:1s; }
+.particle:nth-child(3) { left:35%; width:2px; height:2px; animation-duration:7s; animation-delay:2s; }
+.particle:nth-child(4) { left:50%; width:4px; height:4px; animation-duration:9s; animation-delay:0.5s; }
+.particle:nth-child(5) { left:65%; width:3px; height:3px; animation-duration:11s; animation-delay:3s; }
+.particle:nth-child(6) { left:75%; width:6px; height:6px; animation-duration:8s; animation-delay:1.5s; }
+.particle:nth-child(7) { left:85%; width:2px; height:2px; animation-duration:6s; animation-delay:4s; }
+.particle:nth-child(8) { left:90%; width:4px; height:4px; animation-duration:12s; animation-delay:2s; }
+
+@keyframes floatUp {
+  0%   { bottom: -10px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { bottom: 110%; opacity: 0; transform: translateX(20px); }
+}
+
+#card {
+  position: relative;
+  z-index: 1;
+  width: 380px;
+  padding: 50px 40px 40px;
+  border-radius: 24px;
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  background: rgba(10, 40, 80, 0.35);
+  border: 1px solid rgba(120, 200, 255, 0.2);
+  text-align: center;
+  box-shadow:
+    0 0 40px rgba(50,150,255,0.25),
+    0 20px 60px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(200,240,255,0.15);
+}
+
+#card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(100,200,255,0.3), rgba(255,255,255,0.05));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes iceSparkle {
+  0%   { transform: translateY(0px); filter: drop-shadow(0 0 8px rgba(100,200,255,0.6)); }
+  50%  { transform: translateY(-5px); filter: drop-shadow(0 0 16px rgba(100,220,255,1)); }
+  100% { transform: translateY(0px); filter: drop-shadow(0 0 8px rgba(100,200,255,0.6)); }
+}
+
+.avatar {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  display: flex; justify-content: center; align-items: center;
+  background: radial-gradient(circle at 35% 35%, rgba(200,240,255,0.25), rgba(0,80,160,0.2));
+  box-shadow: 0 0 30px rgba(100,200,255,0.4), inset 0 0 20px rgba(255,255,255,0.1);
+  padding: 18px;
+  border: 1px solid rgba(150,220,255,0.3);
+  animation: iceSparkle 4s ease-in-out infinite;
+  overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: contain; }
+
+.school-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 3px;
+  color: rgba(150,220,255,0.8); text-transform: uppercase; margin-bottom: 6px;
+}
+.subtitle {
+  font-size: 11px; letter-spacing: 1.5px;
+  color: rgba(150,200,240,0.5); margin-bottom: 35px; text-transform: uppercase;
+}
+
+.input-box { width: 100%; margin: 12px 0; }
+.input-box label {
+  display: block; text-align: left;
+  font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(120,200,255,0.7); margin-bottom: 6px; padding-left: 16px;
+}
+.input-box input {
+  width: 100%; padding: 13px 18px; border-radius: 50px;
+  border: 1px solid rgba(100,180,255,0.2);
+  background: rgba(5,25,60,0.5); outline: none;
+  color: rgba(220,245,255,0.95); font-size: 14px; font-family: 'Raleway', sans-serif;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); transition: all 0.35s ease;
+}
+.input-box input:focus {
+  border-color: rgba(100,190,255,0.6);
+  box-shadow: 0 0 20px rgba(80,180,255,0.3), inset 0 2px 10px rgba(0,0,0,0.2);
+}
+.input-box input::placeholder { color: rgba(120,180,220,0.4); font-style: italic; }
+
+.login-btn {
+  margin-top: 28px; width: 100%; padding: 15px; border: none; border-radius: 50px;
+  font-size: 13px; font-weight: 700; font-family: 'Cinzel', serif;
+  letter-spacing: 3px; text-transform: uppercase; color: white; cursor: pointer;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #29b6f6, #0288d1, #01579b);
+  box-shadow: 0 8px 25px rgba(2,136,209,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: all 0.35s ease;
+}
+.login-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(2,180,255,0.6);
+}
+.login-btn::before {
+  content: ""; position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+  transition: 0.6s ease;
+}
+.login-btn:hover::before { left: 100%; }
+
+.forgot {
+  display: block; margin-top: 10px; font-size: 11px; letter-spacing: 1px;
+  color: rgba(120,190,240,0.6); text-decoration: none; transition: color 0.2s;
+}
+.forgot:hover { color: rgba(150,220,255,0.9); text-decoration: underline; }
+
+.field-error {
+  font-size: 11px;
+  color: rgba(150, 210, 255, 0.9);
+  letter-spacing: 0.5px;
+  padding-left: 16px;
+  margin-top: 5px;
+  min-height: 16px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+.field-error.show {
+  opacity: 1;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-6px); }
+  75%     { transform: translateX(6px); }
+}
+.shake { animation: shake 0.4s ease; }
+
+@keyframes flipUpsideDown {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(180deg); }
+}
+@keyframes flipRightSideUp {
+  0%   { transform: rotate(180deg); }
+  100% { transform: rotate(0deg); }
+}
+body.upside-down {
+  animation: flipUpsideDown 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+body.right-side-up {
+  animation: flipRightSideUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.easter-msg {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 200;
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 3px;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(100,220,255,0.9);
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+  opacity: 0;
+  white-space: nowrap;
+}
+.easter-msg.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+  0%,100% { transform: translateX(0) rotate(0deg); }
+  10%     { transform: translateX(-12px) rotate(-1deg); }
+  20%     { transform: translateX(12px) rotate(1deg); }
+  30%     { transform: translateX(-10px) rotate(-0.8deg); }
+  40%     { transform: translateX(10px) rotate(0.8deg); }
+  50%     { transform: translateX(-8px) rotate(-0.5deg); }
+  60%     { transform: translateX(8px) rotate(0.5deg); }
+  70%     { transform: translateX(-5px) rotate(-0.3deg); }
+  80%     { transform: translateX(5px) rotate(0.3deg); }
+  90%     { transform: translateX(-2px); }
+}
+.page-shake { animation: pageShake 0.7s ease; }
+
+.nope-msg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 200;
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 6px;
+  text-shadow: 0 0 30px rgba(255,100,100,0.9), 0 0 60px rgba(255,50,50,0.6);
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+  opacity: 0;
+  white-space: nowrap;
+}
+.nope-msg.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 0; }
+.divider::before, .divider::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(100,180,255,0.2), transparent);
+}
+.divider span { font-size: 10px; letter-spacing: 2px; color: rgba(100,180,255,0.35); }
+
+/* ❄ Clickable snowflakes at bottom */
+.snowflakes {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 24px;
+  z-index: 10;
+}
+
+.snowflake-btn {
+  font-size: 28px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+  filter: drop-shadow(0 0 6px rgba(100,200,255,0.5));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  animation: snowflakeBob 3s ease-in-out infinite;
+  user-select: none;
+}
+.snowflake-btn:nth-child(2) { animation-delay: 0.5s; font-size: 22px; }
+
+.snowflake-btn:hover {
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 14px rgba(150,230,255,1));
+}
+
+@keyframes snowflakeBob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* Freeze overlay on card */
+#card .freeze-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: linear-gradient(135deg,
+    rgba(180,230,255,0.0) 0%,
+    rgba(180,230,255,0.0) 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+/* Ice crack lines */
+.ice-crack {
+  position: absolute;
+  background: rgba(200,240,255,0.6);
+  transform-origin: 0 50%;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(150,220,255,0.8);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Freeze message */
+.freeze-msg {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  z-index: 200;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: rgba(180,240,255,0.9);
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px rgba(100,200,255,0.9);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+  opacity: 0;
+}
+.freeze-msg.show {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+/* Welcome screen */
+#welcomeScreen {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+#welcomeScreen.show { opacity: 1; pointer-events: all; }
+
+.welcome-text {
+  font-family: 'Cinzel', serif;
+  font-size: 48px; font-weight: 600; color: white; letter-spacing: 6px;
+  text-shadow: 0 0 40px rgba(100,220,255,1), 0 0 80px rgba(50,180,255,0.8);
+  transform: translateY(30px); transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.welcome-sub {
+  margin-top: 14px; font-size: 13px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(150,220,255,0.8);
+  transform: translateY(30px); transition: transform 0.8s 0.15s cubic-bezier(0.16,1,0.3,1);
+}
+#welcomeScreen.show .welcome-text,
+#welcomeScreen.show .welcome-sub { transform: translateY(0); }
+
+.welcome-made {
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(100, 180, 255, 0.45);
+  transform: translateY(30px);
+  transition: transform 0.8s 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+#welcomeScreen.show .welcome-made { transform: translateY(0); }
+.back-btn {
+  margin-top: 40px;
+  padding: 12px 32px;
+  border: 1px solid rgba(150,220,255,0.4);
+  border-radius: 50px;
+  background: rgba(10,40,80,0.4);
+  backdrop-filter: blur(10px);
+  color: rgba(180,230,255,0.9);
+  font-family: 'Cinzel', serif;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer;
+  transform: translateY(30px);
+  transition: transform 0.8s 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 20px rgba(50,150,255,0.2);
+}
+.back-btn:hover {
+  background: rgba(20,60,120,0.6);
+  box-shadow: 0 0 30px rgba(100,200,255,0.5);
+  border-color: rgba(180,240,255,0.7);
+}
+#welcomeScreen.show .back-btn { transform: translateY(0); }
+
+/* Watermark */
+.watermark {
+  position: fixed;
+  bottom: 18px; right: 22px;
+  z-index: 5;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; letter-spacing: 1.5px;
+  color: rgba(150,210,255,0.35);
+  font-family: 'Raleway', sans-serif;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+.watermark:hover { color: rgba(180,230,255,0.6); }
+.watermark .ice-icon { font-size: 13px; }
+
+/* ❄️ Ice crystals on welcome screen */
+.ice-crystal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0;
+  font-size: 28px;
+  filter: drop-shadow(0 0 8px rgba(100,200,255,0.8));
+  animation: none;
+}
+#welcomeScreen.show .ice-crystal { animation: crystalFloat 3s ease forwards; }
+
+.ice-crystal:nth-child(1) { top: 8%;  left: 6%;   font-size: 36px; animation-delay: 0.1s !important; }
+.ice-crystal:nth-child(2) { top: 12%; right: 8%;  font-size: 24px; animation-delay: 0.3s !important; }
+.ice-crystal:nth-child(3) { bottom: 15%; left: 10%; font-size: 42px; animation-delay: 0.2s !important; }
+.ice-crystal:nth-child(4) { bottom: 20%; right: 6%; font-size: 28px; animation-delay: 0.4s !important; }
+.ice-crystal:nth-child(5) { top: 40%; left: 3%;   font-size: 20px; animation-delay: 0.5s !important; }
+.ice-crystal:nth-child(6) { top: 35%; right: 3%;  font-size: 32px; animation-delay: 0.15s !important; }
+
+@keyframes crystalFloat {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+  40%  { opacity: 1; transform: scale(1.1) rotate(5deg); }
+  70%  { opacity: 0.9; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes crystalPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(100,200,255,0.6)); }
+  50%       { filter: drop-shadow(0 0 18px rgba(150,230,255,1)); }
+}
+#welcomeScreen.show .ice-crystal {
+  animation: crystalFloat 1s ease forwards, crystalPulse 2.5s 1s ease-in-out infinite;
+}
+
+/* Info button & popup */
+.info-btn {
+  margin-top: 16px;
+  padding: 10px 28px;
+  border: 1px solid rgba(150,220,255,0.3);
+  border-radius: 50px;
+  background: rgba(10,40,80,0.3);
+  backdrop-filter: blur(10px);
+  color: rgba(150,210,255,0.7);
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer;
+  transform: translateY(30px);
+  transition: transform 0.8s 0.35s cubic-bezier(0.16,1,0.3,1), background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.info-btn:hover {
+  background: rgba(20,60,120,0.5);
+  color: rgba(200,235,255,0.95);
+  box-shadow: 0 0 20px rgba(100,200,255,0.3);
+  border-color: rgba(180,240,255,0.5);
+}
+#welcomeScreen.show .info-btn { transform: translateY(0); }
+
+.popup-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,10,30,0.6);
+  backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: flex; justify-content: center; align-items: center;
+}
+.popup-overlay.show { opacity: 1; pointer-events: all; }
+
+.popup-box {
+  width: 420px; padding: 40px;
+  border-radius: 20px;
+  background: rgba(8,30,65,0.9);
+  border: 1px solid rgba(120,200,255,0.25);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 0 60px rgba(50,150,255,0.3), 0 20px 60px rgba(0,0,0,0.5);
+  transform: scale(0.85) translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.popup-overlay.show .popup-box { transform: scale(1) translateY(0); }
+
+.popup-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(150,220,255,0.9); margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(100,180,255,0.15);
+}
+.popup-text {
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px; line-height: 1.9;
+  color: rgba(200,230,255,0.85);
+  letter-spacing: 0.3px;
+}
+.popup-close {
+  margin-top: 28px;
+  padding: 10px 28px;
+  border: 1px solid rgba(150,220,255,0.3);
+  border-radius: 50px;
+  background: rgba(10,40,80,0.4);
+  color: rgba(150,210,255,0.8);
+  font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block; margin-left: auto;
+}
+.popup-close:hover {
+  background: rgba(20,60,120,0.6);
+  box-shadow: 0 0 20px rgba(100,200,255,0.3);
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<video class="background" autoplay muted loop playsinline>
+  <source src="background.mp4" type="video/mp4">
+</video>
+
+<div class="particles">
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div>
+</div>
+
+<div id="welcomeScreen">
+  <!-- Ice crystals in corners -->
+  <div class="ice-crystal">❄</div>
+  <div class="ice-crystal">❅</div>
+  <div class="ice-crystal">❆</div>
+  <div class="ice-crystal">❄</div>
+  <div class="ice-crystal">❅</div>
+  <div class="ice-crystal">❆</div>
+
+  <div class="welcome-text">Welkom, J.J. de Maar!</div>
+  <div class="welcome-sub">Succesvol ingelogd ❄</div>
+  <div class="welcome-made">Gemaakt door: Roan van Doorn</div>
+  <button class="back-btn" id="backBtn">↩ Terug naar login</button>
+  <button class="info-btn" id="infoBtn">❄ Over dit project</button>
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-title">❄ Over dit project</div>
+    <div class="popup-text">
+      Ik ben op het idee gekomen doordat ik dit al kan en het een leuk iets vind om te maken. Ik vind ook dat het mooi is uitgekomen en dat het thema goed gemaakt is. :D
+    </div>
+    <button class="popup-close" id="popupClose">Sluiten</button>
+  </div>
+</div>
+
+<!-- Watermark -->
+<div class="watermark">
+  <span class="ice-icon">❄</span>
+  <span>Gemaakt door: Roan van Doorn</span>
+</div>
+
+<div class="easter-msg" id="easterMsg">🙃 Oeps...<br>klik nog een keer!</div>
+
+<!-- Nope message -->
+<div class="nope-msg" id="nopeMsg">😤 Waarom vergeet je het alweer?!</div>
+
+
+
+<!-- Freeze message -->
+<div class="freeze-msg" id="freezeMsg">❄ Bevroren! ❄</div>
+
+<div id="card">
+  <!-- Freeze overlay -->
+  <div class="freeze-overlay" id="freezeOverlay"></div>
+  <div class="avatar">
+    <img src="logo.svg" alt="Het Rhedens Logo">
+  </div>
+  <p class="school-title">Het Rhedens</p>
+  <p class="subtitle">Leerling Portaal</p>
+  <form id="loginForm">
+    <div class="input-box">
+      <label for="username">Gebruikersnaam</label>
+      <input type="text" id="username" placeholder="Voer je naam in" autocomplete="off">
+      <div class="field-error" id="usernameError"></div>
+    </div>
+    <div class="input-box">
+      <label for="password">Wachtwoord</label>
+      <input type="password" id="password" placeholder="••••••••">
+      <div class="field-error" id="passwordError"></div>
+    </div>
+    <a href="#" class="forgot">Wachtwoord vergeten?</a>
+    <button type="submit" class="login-btn">Inloggen</button>
+  </form>
+  <div class="message" id="message"></div>
+  <div class="divider"><span id="dividerSnowflake" style="cursor:pointer; transition: filter 0.2s ease; font-size: 14px;" title="🤫">❄</span></div>
+</div>
+
+<script>
+
+// ========== SHATTER ANIMATION ==========
+function runLoginAnimation(card, welcomeScreen) {
+
+  // --- Step 1: shake the card ---
+  card.style.transition = "transform 0.08s ease";
+  var shakeCount = 0;
+  var shakeDir = 1;
+  var shakeInterval = setInterval(function() {
+    card.style.transform = "translateX(" + (shakeDir * 7) + "px) rotate(" + (shakeDir * 1.5) + "deg)";
+    shakeDir *= -1;
+    shakeCount++;
+    if (shakeCount > 8) {
+      clearInterval(shakeInterval);
+      card.style.transform = "translateX(0) rotate(0deg)";
+      createShards(card);
+    }
+  }, 60);
+
+  // --- Step 2: show welcome ---
+  setTimeout(function() {
+    welcomeScreen.classList.add("show");
+  }, 1800);
+}
+
+function createShards(card) {
+  var rect = card.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + rect.height / 2;
+
+  card.style.opacity = "0";
+
+  for (var i = 0; i < 55; i++) {
+    var shard = document.createElement("div");
+
+    // random position somewhere on the card
+    var sw = 30 + Math.random() * 80;
+    var sh = 20 + Math.random() * 70;
+    var sx = rect.left + Math.random() * (rect.width - sw * 0.5) - sw * 0.2;
+    var sy = rect.top + Math.random() * (rect.height - sh * 0.5) - sh * 0.2;
+
+    // random irregular polygon (5-7 points)
+    var points = 5 + Math.floor(Math.random() * 3);
+    var clipPoints = [];
+    for (var p = 0; p < points; p++) {
+      var angle = (p / points) * 360 + (Math.random() - 0.5) * (360 / points) * 0.7;
+      var rad = angle * Math.PI / 180;
+      var rx = 30 + Math.random() * 35;
+      var ry = 30 + Math.random() * 35;
+      var px = 50 + Math.cos(rad) * rx;
+      var py = 50 + Math.sin(rad) * ry;
+      px = Math.max(2, Math.min(98, px));
+      py = Math.max(2, Math.min(98, py));
+      clipPoints.push(px.toFixed(1) + "% " + py.toFixed(1) + "%");
+    }
+
+    var duration = 0.5 + Math.random() * 0.7;
+    var delay = Math.random() * 150;
+
+    shard.style.cssText = [
+      "position:fixed",
+      "left:" + sx + "px",
+      "top:" + sy + "px",
+      "width:" + sw + "px",
+      "height:" + sh + "px",
+      "backdrop-filter:blur(25px)",
+      "-webkit-backdrop-filter:blur(25px)",
+      "background:rgba(" + (8 + Math.random()*20) + "," + (35 + Math.random()*30) + "," + (80 + Math.random()*40) + "," + (0.35 + Math.random()*0.3) + ")",
+      "border:1px solid rgba(180,230,255," + (0.3 + Math.random() * 0.5) + ")",
+      "z-index:50",
+      "transition:transform " + duration + "s cubic-bezier(0.25,0.46,0.45,0.94) " + delay + "ms, opacity " + duration + "s ease " + delay + "ms",
+      "box-shadow:0 0 " + (6 + Math.random()*12) + "px rgba(100,200,255," + (0.3+Math.random()*0.4) + ")",
+      "clip-path:polygon(" + clipPoints.join(",") + ")"
+    ].join(";");
+
+    var dist = 2.0 + Math.random() * 1.5;
+    var dx = (sx + sw/2 - cx) * dist + (Math.random() - 0.5) * 120;
+    var dy = (sy + sh/2 - cy) * dist + (Math.random() - 0.5) * 120;
+    var rot = (Math.random() - 0.5) * 600;
+    var scale = 0.05 + Math.random() * 0.2;
+
+    document.body.appendChild(shard);
+
+    setTimeout((function(el, ddx, ddy, drot, dscale) {
+      return function() {
+        el.style.transform = "translate(" + ddx + "px, " + ddy + "px) rotate(" + drot + "deg) scale(" + dscale + ")";
+        el.style.opacity = "0";
+        el.style.filter = "brightness(" + (1.5 + Math.random() * 2) + ")";
+      };
+    })(shard, dx, dy, rot, scale), 20);
+
+    setTimeout((function(el) {
+      return function() { if (el.parentNode) el.parentNode.removeChild(el); };
+    })(shard), 1600);
+  }
+}
+
+// ========== INFO POPUP ==========
+document.getElementById("infoBtn").addEventListener("click", function() {
+  document.getElementById("popupOverlay").classList.add("show");
+});
+document.getElementById("popupClose").addEventListener("click", function() {
+  document.getElementById("popupOverlay").classList.remove("show");
+});
+document.getElementById("popupOverlay").addEventListener("click", function(e) {
+  if (e.target === this) this.classList.remove("show");
+});
+
+// ========== SNOWFLAKE FREEZE ==========
+var isFrozen = false;
+var freezeCracks = [];
+
+function freezeCard() {
+  if (isFrozen) {
+    unFreezeCard();
+    return;
+  }
+  isFrozen = true;
+
+  var card = document.getElementById("card");
+  var overlay = document.getElementById("freezeOverlay");
+  var freezeMsg = document.getElementById("freezeMsg");
+  var rect = card.getBoundingClientRect();
+
+  // Blue ice tint on card
+  card.style.transition = "box-shadow 0.5s ease, border-color 0.5s ease, filter 0.5s ease";
+  card.style.boxShadow = "0 0 60px rgba(100,220,255,0.8), 0 0 120px rgba(50,180,255,0.5), inset 0 0 40px rgba(150,230,255,0.2)";
+  card.style.borderColor = "rgba(180,240,255,0.8)";
+  card.style.filter = "brightness(1.1) saturate(0.7) hue-rotate(10deg)";
+
+  // Show freeze overlay
+  overlay.style.opacity = "1";
+  overlay.style.background = "linear-gradient(135deg, rgba(180,230,255,0.08), rgba(100,200,255,0.12))";
+
+  // Draw random ice cracks
+  for (var i = 0; i < 18; i++) {
+    var crack = document.createElement("div");
+    crack.className = "ice-crack";
+    var x = 10 + Math.random() * 80;
+    var y = 10 + Math.random() * 80;
+    var length = 20 + Math.random() * 80;
+    var angle = Math.random() * 360;
+    var thickness = 0.5 + Math.random() * 1.5;
+
+    crack.style.cssText = [
+      "position:absolute",
+      "left:" + x + "%",
+      "top:" + y + "%",
+      "width:" + length + "px",
+      "height:" + thickness + "px",
+      "background:rgba(200,240,255," + (0.4 + Math.random() * 0.4) + ")",
+      "transform:rotate(" + angle + "deg)",
+      "transform-origin:0 50%",
+      "border-radius:2px",
+      "box-shadow:0 0 4px rgba(150,220,255,0.8)",
+      "opacity:0",
+      "transition:opacity 0.3s ease " + (Math.random() * 400) + "ms",
+      "z-index:11"
+    ].join(";");
+
+    overlay.appendChild(crack);
+    freezeCracks.push(crack);
+    setTimeout((function(el) {
+      return function() { el.style.opacity = "1"; };
+    })(crack), 20);
+  }
+
+  // Show message
+  freezeMsg.classList.add("show");
+  setTimeout(function() { freezeMsg.classList.remove("show"); }, 1500);
+}
+
+function unFreezeCard() {
+  isFrozen = false;
+  var card = document.getElementById("card");
+  var overlay = document.getElementById("freezeOverlay");
+
+  card.style.boxShadow = "";
+  card.style.borderColor = "";
+  card.style.filter = "";
+  overlay.style.opacity = "0";
+  overlay.style.background = "";
+
+  // Remove cracks
+  freezeCracks.forEach(function(c) {
+    c.style.opacity = "0";
+    setTimeout(function() { if (c.parentNode) c.parentNode.removeChild(c); }, 300);
+  });
+  freezeCracks = [];
+}
+
+var divSnow = document.getElementById("dividerSnowflake");
+divSnow.addEventListener("click", freezeCard);
+divSnow.addEventListener("mouseenter", function() {
+  this.style.filter = "drop-shadow(0 0 8px rgba(150,230,255,1))";
+});
+divSnow.addEventListener("mouseleave", function() {
+  this.style.filter = "";
+});
+
+// ========== EASTER EGG - LOGO CLICK ==========
+var isUpsideDown = false;
+var failCount = 0;
+document.querySelector(".avatar").addEventListener("click", function() {
+  var easterMsg = document.getElementById("easterMsg");
+  var body = document.body;
+
+  isUpsideDown = !isUpsideDown;
+
+  body.classList.remove("upside-down", "right-side-up");
+  void body.offsetWidth;
+
+  if (isUpsideDown) {
+    body.classList.add("upside-down");
+    easterMsg.innerHTML = "🙃 Oeps...<br>klik nog een keer!";
+  } else {
+    body.classList.add("right-side-up");
+    easterMsg.innerHTML = "😌 Ahh, beter zo.";
+  }
+
+  easterMsg.classList.add("show");
+  setTimeout(function() {
+    easterMsg.classList.remove("show");
+  }, 1800);
+});
+
+// ========== FORGOT PASSWORD JOKE ==========
+document.querySelector(".forgot").addEventListener("click", function(e) {
+  e.preventDefault();
+  var nopeMsg = document.getElementById("nopeMsg");
+  var body = document.body;
+
+  // shake the whole page
+  body.classList.remove("page-shake");
+  void body.offsetWidth;
+  body.classList.add("page-shake");
+
+  // show NOPE
+  nopeMsg.classList.add("show");
+
+  // hide after 1.2s
+  setTimeout(function() {
+    nopeMsg.classList.remove("show");
+  }, 1200);
+
+  setTimeout(function() {
+    body.classList.remove("page-shake");
+  }, 700);
+});
+
+
+document.getElementById("backBtn").addEventListener("click", function() {
+  var welcomeScreen = document.getElementById("welcomeScreen");
+  var card = document.getElementById("card");
+  var message = document.getElementById("message");
+
+  welcomeScreen.classList.remove("show");
+
+  setTimeout(function() {
+    card.style.transition = "opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1)";
+    card.style.opacity = "1";
+    card.style.transform = "scale(1) translateY(0)";
+    card.style.filter = "brightness(1)";
+    card.style.boxShadow = "";
+    card.style.borderColor = "";
+    message.textContent = "";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+  }, 400);
+});
+
+// ========== LOGIN FORM ==========
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  var user = document.getElementById("username").value.trim();
+  var pass = document.getElementById("password").value;
+  var message = document.getElementById("message");
+  var card = document.getElementById("card");
+  var welcomeScreen = document.getElementById("welcomeScreen");
+
+  message.textContent = "";
+  message.style.color = "";
+  message.style.fontSize = "";
+  message.classList.remove("shake");
+
+  var usernameError = document.getElementById("usernameError");
+  var passwordError = document.getElementById("passwordError");
+  usernameError.classList.remove("show");
+  passwordError.classList.remove("show");
+  usernameError.textContent = "";
+  passwordError.textContent = "";
+
+  if (!user && !pass) {
+    usernameError.textContent = "❄ Hoe ga je inloggen zonder dit....";
+    passwordError.textContent = "❄ Hoe ga je inloggen zonder dit....";
+    void usernameError.offsetWidth;
+    usernameError.classList.add("show");
+    passwordError.classList.add("show");
+    return;
+  } else if (!user) {
+    usernameError.textContent = "❄ Hoe ga je inloggen zonder dit....";
+    void usernameError.offsetWidth;
+    usernameError.classList.add("show");
+    return;
+  } else if (!pass) {
+    passwordError.textContent = "❄ Hoe ga je inloggen zonder dit....";
+    void passwordError.offsetWidth;
+    passwordError.classList.add("show");
+    return;
+  }
+
+  if (user === "de Maar" && pass === "1234") {
+    message.textContent = "✓ Succesvol ingelogd!";
+    message.style.color = "#80ffcc";
+    message.style.fontSize = "";
+    failCount = 0;
+    setTimeout(function() {
+      runLoginAnimation(card, welcomeScreen);
+    }, 400);
+
+  } else {
+    failCount++;
+    if (failCount >= 3) {
+      message.textContent = "🤦 Hoe vergeet je wachtwoord 3 keer, kom op man...";
+      message.style.color = "#ff6b6b";
+      message.style.fontSize = "12px";
+      failCount = 0;
+    } else {
+      message.textContent = "✗ Verkeerde inloggegevens. (" + failCount + "/3)";
+      message.style.color = "#ff8fa0";
+      message.style.fontSize = "";
+    }
+    void message.offsetWidth;
+    message.classList.add("shake");
+  }
+});
+</script>
+
+</body>
+</html>
